@@ -1,21 +1,26 @@
 import pytest
 from data.collector import DataCollector
 from data.cpu_collector import CPUCollector
+from data.memory_collector import MemoryCollector
+
 
 class MockCollector(DataCollector):
     def update(self):
         self._data = {"test": 42}
 
+
 def test_collector_initialization():
     collector = MockCollector()
     assert collector.get_data() is None
+
 
 def test_collector_update_stores_data():
     """Test that update() stores retrievable data"""
     collector = MockCollector()
     collector.update()
     data = collector.get_data()
-    assert data == {'test': 42}
+    assert data == {"test": 42}
+
 
 def test_collector_multiple_updates():
     """Test that subsequent updates replace old data"""
@@ -23,7 +28,7 @@ def test_collector_multiple_updates():
     collector.update()
     collector.update()
     data = collector.get_data()
-    assert data == {'test': 42}
+    assert data == {"test": 42}
 
 
 def test_cpu_collector_returns_percentage():
@@ -33,8 +38,8 @@ def test_cpu_collector_returns_percentage():
     data = collector.get_data()
 
     assert data is not None
-    assert 'cpu_percent' in data
-    assert 0 <= data['cpu_percent'] <= 100
+    assert "cpu_percent" in data
+    assert 0 <= data["cpu_percent"] <= 100
 
 
 def test_cpu_collector_returns_per_core():
@@ -43,8 +48,39 @@ def test_cpu_collector_returns_per_core():
     collector.update()
     data = collector.get_data()
 
-    assert 'per_core' in data
-    assert isinstance(data['per_core'], list)
-    assert len(data['per_core']) > 0
-    for core_percent in data['per_core']:
+    assert "per_core" in data
+    assert isinstance(data["per_core"], list)
+    assert len(data["per_core"]) > 0
+    for core_percent in data["per_core"]:
         assert 0 <= core_percent <= 100
+
+
+def test_memory_collector_returns_usage():
+    """Test that memory collector returns memory usage data"""
+    collector = MemoryCollector()
+    collector.update()
+    data = collector.get_data()
+
+    assert data is not None
+    assert "percent" in data
+    assert "total" in data
+    assert "available" in data
+    assert "used" in data
+
+    assert 0 <= data["percent"] <= 100
+    assert data["total"] > 0
+    assert data["available"] >= 0
+    assert data["used"] >= 0
+
+
+def test_memory_collector_includes_swap():
+    """Test that memory collector includes swap memory data"""
+    collector = MemoryCollector()
+    collector.update()
+    data = collector.get_data()
+
+    assert "swap_percent" in data
+    assert "swap_total" in data
+    assert "swap_used" in data
+
+    assert 0 <= data["swap_percent"] <= 100
