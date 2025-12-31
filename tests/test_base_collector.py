@@ -1,4 +1,4 @@
-from data.collector import DataCollector
+from data.base_collector import DataCollector
 
 
 def test_collector_initialization():

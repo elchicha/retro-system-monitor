@@ -1,6 +1,6 @@
 import psutil
 
-from data.collector import DataCollector
+from data.base_collector import DataCollector
 
 
 class MemoryCollector(DataCollector):

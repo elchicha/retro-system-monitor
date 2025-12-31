@@ -1,7 +1,7 @@
 import psutil
 from psutil import cpu_percent
 
-from data.collector import DataCollector
+from data.base_collector import DataCollector
 
 
 class CPUCollector(DataCollector):
