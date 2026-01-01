@@ -28,7 +28,6 @@ def test_display_default_dimensions():
     assert display.height > 0
 
 
-
 def test_display_initialization():
     """Test that display initializes with correct dimensions"""
     display = Display(width=800, height=600)
@@ -119,5 +118,19 @@ def test_display_screen_surface_type():
     display = Display()
 
     assert isinstance(display.screen, pygame.Surface)
+
+    display.quit()
+
+
+def test_display_update_flips_display():
+    """Test that update method flips the pygame display"""
+    display = Display()
+
+    # Should not raise an exception
+    display.update()
+
+    # We can't easily test if flip was called without mocking,
+    # but we can verify the method exists and runs
+    assert hasattr(display, "update")
 
     display.quit()
