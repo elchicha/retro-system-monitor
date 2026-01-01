@@ -30,3 +30,25 @@ def test_memory_collector_includes_swap():
     assert "swap_used" in data
 
     assert 0 <= data["swap_percent"] <= 100
+
+
+def test_memory_collector_calculates_usage_rate():
+    """Test that memory collector can calculate usage rate between updates"""
+    collector = MemoryCollector()
+
+    # First update establishes baseline
+    collector.update()
+    first_data = collector.get_data()
+
+    # Second update should calculate rate
+    import time
+
+    time.sleep(0.1)
+
+    collector.update()
+    second_data = collector.get_data()
+
+    # Should have rate field (can be positive or negative)
+    assert "usage_rate" in second_data
+    # Rate can be negative (memory freed) or positive (allocated)
+    assert isinstance(second_data["usage_rate"], (int, float))
