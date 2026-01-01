@@ -31,6 +31,10 @@ class Display:
         """Clear the display with a specified color"""
         self.screen.fill(color)
 
+    def update(self):
+        """Update the display by flipping the screen buffer"""
+        pygame.display.flip()
+
     def tick(self, frame_rate=60):
         """Update the display and handle frame rate"""
         self.clock.tick(frame_rate)
